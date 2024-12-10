@@ -1,3 +1,4 @@
+import { HotelType } from '../shared/Types';
 import { RegisterFormData } from './pages/Register';
 import axios from 'axios';
 
@@ -49,3 +50,14 @@ export const AddMyHotel = async (hotelFormData: FormData, reset: () => void): Pr
         throw new Error("Failed to add hotel");
     }
 };
+
+export const fetchMyHotels = async (): Promise<HotelType[]>=> {
+    const response = await fetch("http://localhost:7000/api/hotel/getHotels",{
+        credentials: "include",
+    })
+    if(!response.ok) {
+        throw new Error("Error fetching hotels")
+    }
+    return response.json()
+}
+

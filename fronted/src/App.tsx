@@ -12,7 +12,7 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_Token");
+    const token = localStorage.getItem("auth_token"); // Ensure the correct token key
     if (token) {
       setIsLoggedIn(true);
     }
@@ -20,24 +20,27 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="px-4 sm:px-[5vh] md:px-[7vw] lg:px-[9vw]">
-        <ToastContainer />
-      </div>
-
-      <Routes>
+      <ToastContainer />
+      
+      <div className="">
+        <Routes>
         <Route path="/" element={<Layout><p>Home Page</p></Layout>} />
-        <Route path="/search" element={<Layout><p>Search Page</p></Layout>} />
-        <Route path="/register" element={<Layout><Register /></Layout>} />
-        <Route path="/signin" element={<Layout><SignIn /></Layout>} />
-        
-        {/* Protected Routes */}
-        {isLoggedIn && (
-          <>
-            <Route path="/add-hotel" element={<Layout><AddHotel /></Layout>} />
-            <Route path="/my-hotels" element={<Layout><MyHotels /></Layout>} />
-          </>
-        )}
-      </Routes>
+
+          <Route path="/search" element={<Layout><p>Search Page</p></Layout>} />
+          <Route path="/register" element={<Layout><Register /></Layout>} />
+          <Route path="/signin" element={<Layout><SignIn /></Layout>} />
+          <Route path="/my-hotels" element={<Layout><MyHotels /></Layout>} />
+
+          
+          {/* Protected Routes */}
+          {isLoggedIn && (
+            <>
+              <Route path="/add-hotel" element={<Layout><AddHotel /></Layout>} />
+            </>
+          )}
+        </Routes>
+      </div>
+      
     </BrowserRouter>
   );
 };

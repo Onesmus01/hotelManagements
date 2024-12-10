@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import AddHotel from '../pages/AddHotel';
 
+
 const Header = () => {
   const isLoggedIn = !!localStorage.getItem('auth_token');
 
@@ -12,7 +13,7 @@ const Header = () => {
   
 
   return (
-    <div className="bg-blue-800 py-6">
+    <div className="bg-blue-800 py-6 ">
       <div className="container mx-auto flex justify-between items-center">
         <span className="text-3xl text-white font-bold tracking-tight">
           <Link to="/">TechHolidays.com</Link>
@@ -23,7 +24,7 @@ const Header = () => {
               <Link to="/my-bookings" className="text-white hover:text-green-500">
                 My Bookings
               </Link>
-              <Link to="/add-hotels" className="text-white hover:text-green-500">
+              <Link to="/my-hotels" className="text-white hover:text-green-500">
                 My Hotels
               </Link>
               <button 

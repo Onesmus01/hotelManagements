@@ -5,8 +5,8 @@ import TypeSection from "./TypeSection";
 import GuestSection from "./GuestSection";
 import FacilitiesDetails from "./FacilitiesDetails";
 import ImageSection from "../ImageSection";
+import MyHotels from "../../pages/MyHotels";
 
-// Define the structure for form data
 export type HotelFormData = {
   name: string;
   city: string;
@@ -87,6 +87,7 @@ const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading }: Props) => {
         <FacilitiesDetails />
         <GuestSection />
         <ImageSection />
+        <MyHotels />
         
         {/* Save Button */}
         <div className="flex justify-end">
