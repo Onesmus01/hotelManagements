@@ -7,6 +7,7 @@ import AddHotel from "./pages/AddHotel";
 import MyHotels from "./pages/MyHotels";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Edithotel from "./pages/Edithotel";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -36,6 +37,10 @@ const App = () => {
           {isLoggedIn && (
             <>
               <Route path="/add-hotel" element={<Layout><AddHotel /></Layout>} />
+              <Route path="/edit-hotel/:hotelId" element={<Layout><Edithotel /></Layout>} />
+              <Route path="/my-hotel" element={<Layout><MyHotels /></Layout>} />
+
+
             </>
           )}
         </Routes>

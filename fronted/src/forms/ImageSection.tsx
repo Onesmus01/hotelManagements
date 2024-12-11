@@ -1,17 +1,31 @@
 import React from 'react';
 import { useFormContext, FieldError } from 'react-hook-form';
+import { HotelType } from '../shared/Types';
 
 interface FormData {
   imageFiles: FileList | undefined;
 }
 
 const ImageSection: React.FC = () => {
-  const { register, formState: { errors } } = useFormContext<FormData>();
+  const { register, formState: { errors },watch ,
+} = useFormContext<FormData>();
+
+const existingImageUrls = watch("imageUrls")
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-3">Images</h2>
       <div className="border rounded p-4 flex flex-col gap-4">
+        {existingImageUrls && (
+          <div className="grid grid-cols-6 gap-4">
+            {existingImageUrls.map((url)=> (
+              <div className="relative group">
+                <img src={url} className='min-h-full object-cover' />
+                <button className='absolute inset-0 flex items-center bg-black bg-opacity-50 opacity-0 hover:opacity-100 text-white'>Delete</button>
+              </div>
+            ))}
+          </div>
+        )}
         <input
           type="file"
           multiple

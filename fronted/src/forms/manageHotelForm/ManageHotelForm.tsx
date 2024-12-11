@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import DetailsSections from "./DetailsSections";
 import TypeSection from "./TypeSection";
@@ -22,11 +22,12 @@ export type HotelFormData = {
 };
 
 type Props = {
+  hotel: HotelType;
   onSave: (hotelFormData: FormData) => Promise<void>; // Ensure onSave supports async operations
   isLoading: boolean;
 };
 
-const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading }: Props) => {
+const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading,hotel }: Props) => {
   const formMethods = useForm<HotelFormData>({
     defaultValues: {
       name: "",
@@ -43,6 +44,9 @@ const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading }: Props) => {
   });
 
   const { handleSubmit, formState: { errors }, reset } = formMethods;
+  useEffect(()=> {
+    reset(hotel)
+  },[hotel, reset])
 
   const onSubmit = async (formDataJson: HotelFormData) => {
     const formData = new FormData();
