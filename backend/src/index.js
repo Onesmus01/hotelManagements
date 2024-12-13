@@ -9,9 +9,12 @@ import connectDb from '../config/db.js';
 import connectAdminDb from '../config/adminDb.js';
 import helmet from 'helmet';
 import imageRouter from '../routes/imageRoute.js'
-dotenv.config(); // Load environment variables
+import path from 'path'
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config(); 
 
-// Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -51,6 +54,13 @@ console.log(process.env.CLOUDINARY_API_SECRET);
     console.error('Database connection error:', err);
   }
 };
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 startServer();
 

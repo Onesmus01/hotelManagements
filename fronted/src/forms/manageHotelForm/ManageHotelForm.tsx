@@ -19,15 +19,16 @@ export type HotelFormData = {
   imageFiles: FileList;
   adultCount: number;
   childCount: number;
+  imageUrls?: string[]; // Optional field for image URLs
 };
 
 type Props = {
-  hotel: HotelType;
-  onSave: (hotelFormData: FormData) => Promise<void>; // Ensure onSave supports async operations
+  hotel?: HotelType;
+  onSave: (hotelFormData: FormData) => Promise<void>;
   isLoading: boolean;
 };
 
-const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading,hotel }: Props) => {
+const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading, hotel }: Props) => {
   const formMethods = useForm<HotelFormData>({
     defaultValues: {
       name: "",
@@ -40,16 +41,25 @@ const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading,hotel }: Props) =>
       facilities: [],
       adultCount: 0,
       childCount: 0,
+      imageUrls: [], // Default to empty array if not provided
     },
   });
 
   const { handleSubmit, formState: { errors }, reset } = formMethods;
-  useEffect(()=> {
-    reset(hotel)
-  },[hotel, reset])
+
+  useEffect(() => {
+    if (hotel) {
+      reset(hotel);
+    }
+  }, [hotel, reset]);
 
   const onSubmit = async (formDataJson: HotelFormData) => {
     const formData = new FormData();
+
+    // Append hotel ID if editing an existing hotel
+    if (hotel) {
+      formData.append("hotelId", hotel._id);
+    }
 
     // Append all fields to FormData
     formData.append("name", formDataJson.name);
@@ -61,6 +71,13 @@ const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading,hotel }: Props) =>
     formData.append("starRating", formDataJson.starRating.toString());
     formData.append("adultCount", formDataJson.adultCount.toString());
     formData.append("childCount", formDataJson.childCount.toString());
+
+    // Append image URLs if provided
+    if (formDataJson.imageUrls) {
+      formDataJson.imageUrls.forEach((url, index) => {
+        formData.append(`imageUrls[${index}]`, url); // Corrected variable name to formData
+      });
+    }
 
     // Append facilities
     formDataJson.facilities.forEach((facility, index) =>
@@ -91,8 +108,7 @@ const ManageHotelForm: React.FC<Props> = ({ onSave, isLoading,hotel }: Props) =>
         <FacilitiesDetails />
         <GuestSection />
         <ImageSection />
-        <MyHotels />
-        
+
         {/* Save Button */}
         <div className="flex justify-end">
           <button

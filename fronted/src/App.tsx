@@ -13,7 +13,9 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("auth_token"); // Ensure the correct token key
+    const token = localStorage.getItem("auth_token"); 
+    console.log("Auth Token:", token);
+
     if (token) {
       setIsLoggedIn(true);
     }
@@ -30,7 +32,6 @@ const App = () => {
           <Route path="/search" element={<Layout><p>Search Page</p></Layout>} />
           <Route path="/register" element={<Layout><Register /></Layout>} />
           <Route path="/signin" element={<Layout><SignIn /></Layout>} />
-          <Route path="/my-hotels" element={<Layout><MyHotels /></Layout>} />
 
           
           {/* Protected Routes */}
@@ -38,9 +39,7 @@ const App = () => {
             <>
               <Route path="/add-hotel" element={<Layout><AddHotel /></Layout>} />
               <Route path="/edit-hotel/:hotelId" element={<Layout><Edithotel /></Layout>} />
-              <Route path="/my-hotel" element={<Layout><MyHotels /></Layout>} />
-
-
+              <Route path="/my-hotels" element={<Layout><MyHotels /></Layout>} />
             </>
           )}
         </Routes>

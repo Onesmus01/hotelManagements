@@ -5,6 +5,7 @@ import multer from 'multer';
 import dotenv from 'dotenv';
 import { body, validationResult } from 'express-validator';
 import verifyToken from '../middleware/auth.js';
+import mongoose from 'mongoose'
 
 dotenv.config();
 
@@ -98,17 +99,69 @@ HotelRouter.get('/getHotels', verifyToken, async (req, res) => {
   }
 });
 
-HotelRouter.get("/:id",verifyToken,async(req,res)=> {
-  const id = req.params.id.toString()
+
+HotelRouter.get("/:id",verifyToken, async (req, res) => {
+    const id = req.params.id;
+
+    // Log the incoming ID and userId for debugging
+    console.log('Requested ID:', id);
+    console.log('User ID:', req.userId);
+
+    try {
+        // Validate the ID format
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ msg: "Invalid ID format" });
+        }
+
+        // Find the hotel by ID and userId
+        const hotel = await Hotel.findOne({
+            _id: id,
+            userId: req.userId, // Ensure `userId` is set correctly
+        });
+
+        if (!hotel) {
+            return res.status(404).json({ msg: "Hotel not found" });
+        }
+
+        res.json(hotel);
+    } catch (error) {
+        console.error('Error fetching hotel:', error.message);
+        res.status(500).json({ msg: "Error fetching hotel", error: error.message });
+    }
+});
+
+HotelRouter.put('/:hotelId', verifyToken, upload.array("imageFiles"), async (req, res) => {
   try {
-    const hotel = await Hotel.findOne({
-      _id: id,
-      userId: req.userId
-    })
-    res.json(hotel)
+    const updatedHotel = req.body;
+    updatedHotel.lastUpdated = new Date();
+
+    const hotel = await Hotel.findOneAndUpdate(
+      {
+        _id: req.params.hotelId,
+        userId: req.userId
+      },
+      updatedHotel,
+      { new: true }
+    );
+
+    if (!hotel) {
+      return res.status(404).json({ msg: "Hotel not found" });
+    }
+
+    const files = req.files;
+    if (files && files.length > 0) {
+      const updatedImageUrls = await uploadImages(files); // Ensure uploadImages returns an array of URLs
+      hotel.imageUrls = [...updatedImageUrls, ...(hotel.imageUrls || [])];
+    }
+
+    await hotel.save();
+
+    res.json({ msg: "Hotel updated successfully", hotel });
   } catch (error) {
-    res.status(500).json({msg: "Error fetching hotels"})
+    console.error("Error updating hotel:", error);
+    res.status(500).json({ msg: "Something went wrong" });
   }
-})
+});
+
 
 export default HotelRouter;

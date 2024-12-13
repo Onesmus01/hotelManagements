@@ -4,7 +4,7 @@ import * as apiClient from './api-clients';
 import { useQuery } from 'react-query';
 import { BsMap, BsBuilding } from 'react-icons/bs';
 import { BiMoney, BiHotel } from 'react-icons/bi';
-import { AiFillStar } from 'react-icons/ai'; // Using filled stars for better aesthetics
+import { AiFillStar } from 'react-icons/ai'; 
 
 const MyHotels = () => {
   const { data: hotelData, isLoading, isError } = useQuery("fetchMyHotels", apiClient.fetchMyHotels, {

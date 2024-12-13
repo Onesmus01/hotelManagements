@@ -5,7 +5,7 @@ import verifyToken from '../middleware/auth.js'
 const router = express.Router()
 
 router.post('/signup',verifyToken,registerUser)
-router.post('/signin',verifyToken,login)
+router.post('/signin',login)
 router.get('/validate-token',verifyToken,validateToken)
 router.post('/logout',logout)
 
