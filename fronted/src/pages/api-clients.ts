@@ -89,23 +89,59 @@ export type SearchParams = {
     checkOut: string;
     adultCount: string;
     childCount: string;
-    page: string;
+    page?: string;
+    facilities?: string[];
+    types?: string[];
+    stars?: string[];
+    maxPrice?: string;
+    sortOption?: string;
 };
 
 export const searchHotels = async (searchParams: SearchParams): Promise<HotelSearchResponse> => {
+    // Create a new URLSearchParams object to hold query parameters
     const queryParams = new URLSearchParams();
+
+    // Add properties that are optional, ensuring we only add them if they exist
+    if (searchParams.maxPrice) queryParams.append("maxPrice", searchParams.maxPrice);
+    if (searchParams.sortOption) queryParams.append("sortOption", searchParams.sortOption);
+
+    // For arrays like facilities, types, and stars, append each item individually
+    if (searchParams.facilities) {
+        searchParams.facilities.forEach((facility) => queryParams.append("facilities", facility));
+    }
+
+    if (searchParams.types) {
+        searchParams.types.forEach((type) => queryParams.append("types", type));
+    }
+
+    if (searchParams.stars) {
+        searchParams.stars.forEach((star) => queryParams.append("stars", star));
+    }
+
+    // Add the rest of the parameters if they exist
     Object.entries(searchParams).forEach(([key, value]) => {
-        if (value) {
+        if (value && key !== 'facilities' && key !== 'types' && key !== 'stars') {
             queryParams.append(key, value);
         }
     });
 
-    const response = await fetch(`http://localhost:7000/api/searchHotel/search?${queryParams}`);
+    // Construct the final URL with query parameters
+    const url = `http://localhost:7000/api/searchHotel/search?${queryParams.toString()}`;
 
-    if (!response.ok) {
-        const errorDetails = await response.text();
-        throw new Error(`Error fetching hotels: ${response.status} ${response.statusText} - ${errorDetails}`);
+    try {
+        // Fetch data from the backend
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            const errorDetails = await response.text();
+            throw new Error(`Error fetching hotels: ${response.status} ${response.statusText} - ${errorDetails}`);
+        }
+
+        // Return the parsed JSON response
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error in searchHotels:", error);
+        throw error; // Rethrow error to be handled by the calling code
     }
-
-    return await response.json(); // Return the parsed JSON response
 };

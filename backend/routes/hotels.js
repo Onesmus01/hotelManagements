@@ -6,22 +6,37 @@ const searchRouter = express.Router()
 
 searchRouter.get("/search", async (req, res) => {
     try {
-        // Construct the search query from request parameters
+
         const query = constructSearchQuery(req.query);
+       //SORT QUERY
+        let sortOptions = {}
+        switch(req.query.sortOptions) {
+            case "starRating":
+                sortOptions = {starRating: - 1};
+                break;
+            case "pricePerNightAsc":
+                sortOptions = { pricePerNight: 1}
+                break;
+
+            case "pricePerNightDesc":
+                    sortOptions = { pricePerNight: -1}
+                    break;
+                default:
+                    sortOptions = {name: 1}
+                    break;
+        }
 
         const pageSize = 5;
         const pageNumber = parseInt(req.query.page || "1", 10);
 
-        // Validate page number
         if (pageNumber < 1) {
             return res.status(400).json({ msg: "Invalid page number, should start at 1" });
         }
 
         const skip = (pageNumber - 1) * pageSize;
 
-        // Fetch hotels and total document count concurrently
         const [hotels, total] = await Promise.all([
-            Hotel.find(query).skip(skip).limit(pageSize),
+            Hotel.find(query).skip(skip).sort(sortOptions).limit(pageSize),
             Hotel.countDocuments(query),
         ]);
 
