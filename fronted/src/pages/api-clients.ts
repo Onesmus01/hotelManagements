@@ -82,3 +82,30 @@ export const updateMyHotelIdByid = async (hotelFormData: FormData)=> {
     }
     return response.json()
 }
+
+export type SearchParams = {
+    destination: string;
+    checkIn: string;
+    checkOut: string;
+    adultCount: string;
+    childCount: string;
+    page: string;
+};
+
+export const searchHotels = async (searchParams: SearchParams): Promise<HotelSearchResponse> => {
+    const queryParams = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+        if (value) {
+            queryParams.append(key, value);
+        }
+    });
+
+    const response = await fetch(`http://localhost:7000/api/searchHotel/search?${queryParams}`);
+
+    if (!response.ok) {
+        const errorDetails = await response.text();
+        throw new Error(`Error fetching hotels: ${response.status} ${response.statusText} - ${errorDetails}`);
+    }
+
+    return await response.json(); // Return the parsed JSON response
+};

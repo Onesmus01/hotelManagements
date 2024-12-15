@@ -55,7 +55,7 @@ const MyHotels = () => {
           >
             <div className="p-5 space-y-4">
               <h2 className="text-2xl font-bold text-gray-800">{hotel.name}</h2>
-              <p className="text-gray-600 text-sm whitespace-pre-line">{hotel.description}</p>
+              <p className="text-gray-600 text-sm whitespace-pre-line leading-relaxed">{hotel.description}</p>
 
               <div className="grid grid-cols-1 gap-3">
                 <div className="flex items-center space-x-2 text-gray-700">

@@ -10,6 +10,7 @@ import connectAdminDb from '../config/adminDb.js';
 import helmet from 'helmet';
 import imageRouter from '../routes/imageRoute.js'
 import path from 'path'
+import searchRouter from '../routes/hotels.js'
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +38,7 @@ app.use(cookieParser());
 app.use('/api/user', router);
 app.use('/api/hotel', HotelRouter);
 app.use('/api/image',imageRouter)
-
+app.use('/api/searchHotel',searchRouter)
 const startServer = async () => {
   try {
     await connectDb();

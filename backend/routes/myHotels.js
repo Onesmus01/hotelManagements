@@ -11,7 +11,6 @@ dotenv.config();
 
 const HotelRouter = express.Router();
 
-// Setup multer storage configuration for in-memory file storage
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
