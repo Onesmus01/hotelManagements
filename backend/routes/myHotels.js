@@ -129,38 +129,41 @@ HotelRouter.get("/:id",verifyToken, async (req, res) => {
     }
 });
 
-HotelRouter.put('/:hotelId', verifyToken, upload.array("imageFiles"), async (req, res) => {
+HotelRouter.put('/:hotelId', verifyToken, upload.array('imageFiles'), async (req, res) => {
   try {
+    console.log('Hotel Data:', req.body);
+    console.log('Uploaded Files:', req.files);
+
     const updatedHotel = req.body;
-    updatedHotel.lastUpdated = new Date();
+    updatedHotel.lastUpdated = new Date(); // Set lastUpdated to now
 
     const hotel = await Hotel.findOneAndUpdate(
-      {
-        _id: req.params.hotelId,
-        userId: req.userId
-      },
+      { _id: req.params.hotelId, userId: req.userId },
       updatedHotel,
       { new: true }
     );
 
     if (!hotel) {
-      return res.status(404).json({ msg: "Hotel not found" });
+      return res.status(404).json({ msg: 'Hotel not found' });
     }
 
-    const files = req.files;
-    if (files && files.length > 0) {
-      const updatedImageUrls = await uploadImages(files); // Ensure uploadImages returns an array of URLs
+    // Handle uploaded images
+    if (req.files && req.files.length > 0) {
+      const updatedImageUrls = await uploadImages(req.files); // Upload images
       hotel.imageUrls = [...updatedImageUrls, ...(hotel.imageUrls || [])];
     }
 
     await hotel.save();
-
-    res.json({ msg: "Hotel updated successfully", hotel });
+    res.json({ msg: 'Hotel updated successfully', hotel });
   } catch (error) {
-    console.error("Error updating hotel:", error);
-    res.status(500).json({ msg: "Something went wrong" });
+    console.error('Error updating hotel:', error);
+    res.status(500).json({
+      msg: 'Something went wrong while updating the hotel',
+      error: error.message,
+    });
   }
 });
+
 
 
 export default HotelRouter;

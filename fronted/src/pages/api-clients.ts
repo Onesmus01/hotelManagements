@@ -71,17 +71,25 @@ export const fetchMyHotelsById = async(hotelId: string): Promise<HotelType>=> {
     return response.json()
 }
 
-export const updateMyHotelIdByid = async (hotelFormData: FormData)=> {
-    const response = await fetch(`http://localhost:7000/api/hotel/${hotelFormData.get("hotelId")}`,{
+export const updateMyHotelIdByid = async (hotelFormData: FormData) => {
+    const response = await fetch(`http://localhost:7000/api/hotel/${hotelFormData.get("hotelId")}`, {
         method: "PUT",
-        body: "hotelFormData",
-        credentials: "include"
-    })
-    if(!response.ok){
-        throw new Error("Failed to update Hotel")
+        body: hotelFormData,
+        credentials: "include",
+    });
+
+    // Log the response for debugging
+    const responseBody = await response.text(); // Read the response body as text
+    console.log("Response body:", responseBody); // Log it to inspect it
+
+    if (!response.ok) {
+        throw new Error(`Failed to update Hotel: ${responseBody}`);
     }
-    return response.json()
-}
+
+    return JSON.parse(responseBody); // Parse the response as JSON
+};
+
+
 
 export type SearchParams = {
     destination: string;
@@ -145,3 +153,7 @@ export const searchHotels = async (searchParams: SearchParams): Promise<HotelSea
         throw error; // Rethrow error to be handled by the calling code
     }
 };
+
+export const fetchHotelById = async(hotelId: string) => {
+    const response= await fetch(`http://localhost:7000/api/searchHotel`)
+}

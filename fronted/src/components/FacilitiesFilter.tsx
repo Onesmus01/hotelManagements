@@ -1,5 +1,5 @@
 import React from 'react';
-import { hotelFacilities, hotelTypes } from '../config/hotelConfig';
+import { hotelFacilities} from '../config/hotelConfig';
 
 type Props = {
     selectedFacilities: string[];

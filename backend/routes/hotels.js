@@ -96,6 +96,21 @@ function constructSearchQuery(queryParams) {
     return constructedQuery;
 }
 
+searchRouter.get('/:id',async(req,res)=> {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        return res.status(400).json({errors: errors.array()})
+    }
+    const id = req.params.id.toString()
+    try {
+        const hotel =await Hotel.findById(id)
+        res.json(hotel)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({message: "Error fetching Hotels"})
+    }
+})
+
 
 export default searchRouter
 
