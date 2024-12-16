@@ -6,24 +6,23 @@ const searchRouter = express.Router()
 
 searchRouter.get("/search", async (req, res) => {
     try {
-
         const query = constructSearchQuery(req.query);
-       //SORT QUERY
-        let sortOptions = {}
-        switch(req.query.sortOptions) {
+
+        // SORT QUERY
+        let sortOptions = {};
+        switch (req.query.sortOption) {  // Use 'sortOption' (singular)
             case "starRating":
-                sortOptions = {starRating: - 1};
+                sortOptions = { starRating: -1 };  // descending
                 break;
             case "pricePerNightAsc":
-                sortOptions = { pricePerNight: 1}
+                sortOptions = { pricePerNight: 1 };  // ascending
                 break;
-
             case "pricePerNightDesc":
-                    sortOptions = { pricePerNight: -1}
-                    break;
-                default:
-                    sortOptions = {name: 1}
-                    break;
+                sortOptions = { pricePerNight: -1 };  // descending
+                break;
+            default:
+                sortOptions = { starRating: -1 };  // Default sort by star rating (descending)
+                break;
         }
 
         const pageSize = 5;
@@ -41,7 +40,7 @@ searchRouter.get("/search", async (req, res) => {
         ]);
 
         const totalPages = Math.ceil(total / pageSize);
-        
+
         // Check if the requested page exceeds total pages
         if (pageNumber > totalPages) {
             return res.status(404).json({ msg: "Page not found" });
@@ -63,6 +62,7 @@ searchRouter.get("/search", async (req, res) => {
         res.status(500).json({ msg: "Internal server error" });
     }
 });
+
 
 // Construct search query based on request parameters
 function constructSearchQuery(queryParams) {

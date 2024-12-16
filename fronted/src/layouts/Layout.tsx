@@ -20,9 +20,7 @@ const Layout = ({children}: Props) => {
             <div className="container mx-auto">
               <SearchBar />
             </div>
-            <div className="flex  mb-3 ml-39 justify-center items-center">
-            <AddHotel />
-            </div>
+            {/* cd  */}
             <div className="container mx-auto py-10 flex-1">{children}</div>
             <Footer />
         </div>
