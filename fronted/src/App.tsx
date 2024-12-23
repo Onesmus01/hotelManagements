@@ -9,6 +9,11 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Edithotel from "./pages/Edithotel";
 import Search from "./pages/Search";
+import Details from "./pages/Details";
+import Booking from "./pages/Booking";
+import BookingForm from "./forms/BookingForm/BookingForm";
+import MyBookings from "./pages/myBookings";
+import Home from "./pages/Home";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,13 +31,17 @@ const App = () => {
     <BrowserRouter>
       <ToastContainer />
       
+      
       <div className="">
         <Routes>
-        <Route path="/" element={<Layout><p>Home Page</p></Layout>} />
+        <Route path="/" element={<Layout><Home /></Layout>} />
 
           <Route path="/search" element={<Layout><Search /></Layout>} />
           <Route path="/register" element={<Layout><Register /></Layout>} />
           <Route path="/signin" element={<Layout><SignIn /></Layout>} />
+          <Route path="/detail/:hotelId" element={<Layout><Details/></Layout>} />
+
+
 
           
           {/* Protected Routes */}
@@ -41,6 +50,11 @@ const App = () => {
               <Route path="/add-hotel" element={<Layout><AddHotel /></Layout>} />
               <Route path="/edit-hotel/:hotelId" element={<Layout><Edithotel /></Layout>} />
               <Route path="/my-hotels" element={<Layout><MyHotels /></Layout>} />
+              <Route path='/hotel/:hotelId/booking' element={<Layout><Booking /></Layout>} />
+              <Route path='/mybookings' element={<Layout><MyBookings /></Layout>} />
+
+
+
             </>
           )}
         </Routes>

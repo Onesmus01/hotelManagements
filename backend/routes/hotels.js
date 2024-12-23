@@ -1,6 +1,8 @@
 import express from 'express'
-import Hotel from '../models/hotelModel.js'
 // import {HotelSearchResponse} from '../shared/types'
+import {param,validationResult} from 'express-validator'
+import mongoose from 'mongoose'
+import Hotel from '../models/hotelModel.js'
 
 const searchRouter = express.Router()
 
@@ -64,7 +66,6 @@ searchRouter.get("/search", async (req, res) => {
 });
 
 
-// Construct search query based on request parameters
 function constructSearchQuery(queryParams) {
     let constructedQuery = {};
 
@@ -96,20 +97,36 @@ function constructSearchQuery(queryParams) {
     return constructedQuery;
 }
 
-searchRouter.get('/:id',async(req,res)=> {
+
+searchRouter.get('/:id',[param("id").notEmpty().withMessage("HotelId is required")], async (req, res) => {
     const errors = validationResult(req)
+    const id = req.params.id.toString()
+
+
+    // Validate that the id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ errors: 'Invalid Hotel ID' });
+    }
     if(!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()})
     }
-    const id = req.params.id.toString()
+
+
     try {
-        const hotel =await Hotel.findById(id)
-        res.json(hotel)
+        const hotel = await Hotel.findById(id);  // Use the id to search for the hotel
+        if (!hotel) {
+            return res.status(404).json({ message: 'Hotel not found' });
+        }
+        res.json(hotel);
     } catch (error) {
-        console.log(error)
-        res.status(500).json({message: "Error fetching Hotels"})
+        console.log(error);
+        res.status(500).json({ message: 'Error fetching Hotels' });
     }
-})
+});
+
+
+
+
 
 
 export default searchRouter

@@ -2,8 +2,6 @@ import React from 'react'
 import Header from '../components/Header'
 import Hero from '../components/Hero'
 import Footer from '../components/Footer'
-import Register from '../pages/Register';
-import AddHotel from '../pages/AddHotel';
 import SearchBar from '../components/SearchBar';
 
 interface Props {

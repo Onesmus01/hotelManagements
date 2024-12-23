@@ -1,16 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import AddHotel from '../pages/AddHotel';
-
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const Header = () => {
+  const { hotelId } = useParams(); // Get hotel id from the URL if available
+
+  const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem('auth_token');
 
   const handleSignOut = () => {
     localStorage.removeItem('auth_token');
-    window.location.href = '/signin'; // Redirect to sign-in page
+    navigate('/signin'); // Use React Router's navigate method
   };
-  
 
   return (
     <div className="bg-blue-800 py-6 ">
@@ -21,7 +21,7 @@ const Header = () => {
         <div className="flex space-x-4">
           {isLoggedIn ? (
             <>
-              <Link to="/my-bookings" className="text-white hover:text-green-500">
+              <Link to={`/hotel/${hotelId}/booking`} className="text-white hover:text-green-500">
                 My Bookings
               </Link>
               <Link to="/my-hotels" className="text-white hover:text-green-500">

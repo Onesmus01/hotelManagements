@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 type RegisterFormData = {
   firstName: string;
@@ -15,6 +15,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>();
   const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
@@ -35,14 +36,14 @@ const Register = () => {
       const result = await response.json();
 
       if (result.token) {
-        console.log('Received token:', result.token); 
+        console.log('Received token:', result.token);
         localStorage.setItem('auth_token', result.token);
-      } else{
-        toast.error(result.message || 'not Autorized')
+        toast.success('Registration successful');
+      } else {
+        toast.error(result.message || 'Not authorized');
       }
 
-      toast.success(result.message || 'Registration successful');
-      navigate('/'); // Navigate to the desired page
+      navigate(location.state?.from?.pathname || '/'); // Navigate to the desired page
     } catch (error: any) {
       toast.error(error.message || 'Something went wrong');
     } finally {
@@ -147,10 +148,8 @@ const Register = () => {
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
           Already have an account? 
-          <Link to='/signin'
-            className="text-blue-600 cursor-pointer hover:underline"
-          >
-            login
+          <Link to='/signin' className="text-blue-600 cursor-pointer hover:underline">
+            Login
           </Link>
         </p>
       </div>

@@ -11,6 +11,7 @@ import helmet from 'helmet';
 import imageRouter from '../routes/imageRoute.js'
 import path from 'path'
 import searchRouter from '../routes/hotels.js'
+import bookingRouter from '../routes/myBookings.js'
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +40,7 @@ app.use('/api/user', router);
 app.use('/api/hotel', HotelRouter);
 app.use('/api/image',imageRouter)
 app.use('/api/searchHotel',searchRouter)
+app.use('/api/bookings',bookingRouter)
 const startServer = async () => {
   try {
     await connectDb();
@@ -57,6 +59,8 @@ console.log(process.env.CLOUDINARY_API_SECRET);
 };
 
 app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));

@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
+
 // Register User
 const registerUser = async (req, res) => {
     try {

@@ -1,29 +1,50 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, ReactNode, useMemo } from "react";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
 
-type ToastMessage = {
-  message: string;
-  type: "SUCCESS" | "ERROR";
-};
+// Stripe Public Key from environment variables
+const STRIPE_PUB_KEY = import.meta.env.VITE_STRIPE_PUB_KEY || "";
 
-type AppContextType = {
-  showToast: (toastMessage: ToastMessage) => void;
-};
+// Validate the Stripe key
+if (!STRIPE_PUB_KEY) {
+  console.warn("Stripe public key is missing. Please check your environment variables.");
+}
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+// Initialize Stripe promise
+const stripePromise = loadStripe(STRIPE_PUB_KEY);
 
-export const AppContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const showToast = (toastMessage: ToastMessage) => {
-    console.log(`Toast Type: ${toastMessage.type}, Message: ${toastMessage.message}`);
-  };
+// Define the context value type
+interface AppContextType {
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  stripePromise: Promise<Stripe | null>;
+}
 
-  return (
-    <AppContext.Provider value={{ showToast }}>
-      {children}
-    </AppContext.Provider>
+// Create the context
+const AppContext = createContext<AppContextType | null>(null);
+
+// Context provider component
+interface AppContextProviderProps {
+  children: ReactNode;
+}
+
+export const AppContextProvider: React.FC<AppContextProviderProps> = ({ children }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Memoize the context value
+  const contextValue = useMemo(
+    () => ({
+      isLoggedIn,
+      setIsLoggedIn,
+      stripePromise, // Make sure this value is correctly passed in the context
+    }),
+    [isLoggedIn]
   );
+
+  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };
 
-export const useAppContext = () => {
+// Custom hook for consuming the context
+export const useAppContext = (): AppContextType => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error("useAppContext must be used within an AppContextProvider");
